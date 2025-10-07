@@ -8,6 +8,10 @@
         <a class="btn btn-primary btn-social pull-right" href="?module=form_ciudad&form=add" title="Agregar" data-toggle="tooltip">
             <i class="fa fa-plus"></i>Agregar
         </a>
+        <!-- Botón de imprimir -->
+        <a class="btn btn-warning btn-social pull-right" href="modules/ciudad/print.php" target="_blank" style="margin-right:10px;">
+            <i class="fa fa-print"></i> Imprimir
+        </a>
     </h1>
 </section>
 
@@ -41,18 +45,13 @@
                         <h4><i class='icon fa fa-times-circle'></i> Error!</h4>
                         No se pudo realizar la operación
                     </div>";
-            } elseif ($_GET['alert'] == 5) {
-                echo "<div class='alert alert-warning alert-dismissable'>
-                        <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                        <h4><i class='icon fa fa-exclamation-triangle'></i> Duplicado!</h4>
-                        Ya existe una ciudad con ese <strong>código</strong> o <strong>nombre</strong>. Verificá los datos antes de guardar.
-                    </div>";
             }
             ?>
 
             <div class="box box-primary">
                 <div class="box-body">
-                    <table class="table table-bordered table-striped">
+                    <table id="dataTables1" class="table table-bordered table-striped table-hover">
+                        <h2>Lista de Ciudades</h2>
                         <thead>
                             <tr>
                                 <th>Código</th>
@@ -68,26 +67,35 @@
                                                             JOIN departamento d ON c.id_departamento = d.id_departamento")
                                      or die('Error: ' . mysqli_error($mysqli));
 
-                            while ($data = mysqli_fetch_assoc($query)) {
-                                echo "<tr>
-                                        <td>{$data['cod_ciudad']}</td>
-                                        <td>{$data['descrip_ciudad']}</td>
-                                        <td>{$data['dep_descripcion']}</td>
-                                        <td>
-                                            <a href='?module=form_ciudad&form=edit&id={$data['cod_ciudad']}' class='btn btn-primary btn-sm' title='Editar' data-toggle='tooltip'>
-                                                <i class='glyphicon glyphicon-edit' style='color:#fff'></i>
-                                            </a>
-                                            <a href='modules/ciudad/proses.php?act=delete&cod_ciudad={$data['cod_ciudad']}' class='btn btn-danger btn-sm' title='Eliminar' data-toggle='tooltip' onclick=\"return confirm('¿Eliminar {$data['descrip_ciudad']}?')\">
-                                                <i class='glyphicon glyphicon-trash'></i>
-                                            </a>
-                                        </td>
-                                      </tr>";
+                            if (mysqli_num_rows($query) == 0) {
+                                echo "<tr><td colspan='4' class='text-center'>No hay datos que mostrar</td></tr>";
+                            } else {
+                                while ($data = mysqli_fetch_assoc($query)) {
+                                    $cod = $data['cod_ciudad'];
+                                    $ciudad = $data['descrip_ciudad'];
+                                    $dep = $data['dep_descripcion'];
+
+                                    echo "<tr>
+                                            <td class='text-center'>$cod</td>
+                                            <td class='text-center'>$ciudad</td>
+                                            <td class='text-center'>$dep</td>
+                                            <td class='text-center' width='120'>
+                                                <a data-toggle='tooltip' title='Editar' class='btn btn-primary btn-sm' href='?module=form_ciudad&form=edit&id=$cod'>
+                                                    <i class='glyphicon glyphicon-edit' style='color:#fff'></i>
+                                                </a>
+                                                <a data-toggle='tooltip' title='Eliminar' class='btn btn-danger btn-sm' href='modules/ciudad/proses.php?act=delete&cod_ciudad=$cod' onclick=\"return confirm('¿Eliminar $ciudad?')\">
+                                                    <i class='glyphicon glyphicon-trash'></i>
+                                                </a>
+                                            </td>
+                                          </tr>";
+                                }
                             }
                             ?>
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
