@@ -42,6 +42,15 @@
           elseif($_GET['module']=='form_ciudad'){
             include "modules/ciudad/form.php";
         }  
+          elseif($_GET['module']=='clientes'){
+            include "modules/clientes/view.php";
+        }
+        
+          elseif($_GET['module']=='form_clientes'){
+            include "modules/clientes/form.php";
+        }  
+
+            
        
 	
     }
